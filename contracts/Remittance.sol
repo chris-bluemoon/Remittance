@@ -24,7 +24,7 @@ address owner;
 // Variable should be unique.
 uint boxNumber;
 
-event LogSendFunds(address, uint);
+event LogFundsReleased(uint, uint, address);
 event LogPasswordError(string);
 event LogPasswordGenerated(string, string);
 
@@ -86,10 +86,11 @@ function openBox(uint boxNo, string password1, string password2) public payable 
 
    if (boxes[boxNo].passwordHash == passwordHash) {
      amountToRelease = boxes[boxNo].amount;
-     msg.sender.transfer(amountToRelease);
      delete boxes[boxNo];
+      emit LogFundsReleased(boxNo, amountToRelease, msg.sender);
+     msg.sender.transfer(amountToRelease);
    } else {
-       LogPasswordError("Password mismatch or invalid box numher!");
+     emit LogPasswordError("Password mismatch or invalid box numher!");
    }
 
 }
